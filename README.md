@@ -1,210 +1,223 @@
-# Wiki/Docs System
+# 🚀 WikiDocs - Modern Documentation Platform
 
-Ein modernes Wiki/Dokumentationssystem mit RBAC, Versionierung, Review-Workflow und Volltext-Suche.
+A modern, Docker-inspired documentation platform built with React, TypeScript, and NestJS. Features a comprehensive admin panel, content management system, and beautiful user interface.
 
-## Features
+## ✨ Features
 
-- 🔐 **Authentifizierung** - JWT + Refresh Tokens, RBAC (Admin/Editor/Viewer)
-- 📝 **Wiki/Docs** - Markdown Editor mit Live-Preview, Mermaid-Diagramme
-- 🔍 **Volltext-Suche** - PostgreSQL Full-Text Search mit Relevanz-Ranking
-- 🔄 **Versionierung** - Komplette Versionshistorie mit Diff-Ansicht
-- ✅ **Review-Workflow** - Draft → Review → Published mit 4-Augen-Prinzip
-- 📁 **Spaces & Tags** - Organisatorische Struktur mit flexiblen Tags
-- 📎 **Attachments** - Datei-Upload mit sicherer Auslieferung
-- 📊 **Audit-Logs** - Vollständige Nachverfolgung aller Änderungen
-- 📤 **Export** - PDF, HTML, ZIP Export von Spaces
-- 🎨 **Theming** - Light/Dark Mode, responsive Design
-- 💬 **Kommentare** - Kollaborative Diskussion zu Seiten
+### 🎯 **Complete Wiki System**
+- **Modern Docker-inspired UI** with blue navigation header
+- **Content Management** - Create, edit, delete pages and spaces
+- **Rich Text Editor** with Markdown support and templates
+- **Space Organization** - Group related documentation
+- **Full Admin Panel** with user management and analytics
 
-## Tech Stack
+### 🔐 **Authentication & Permissions**
+- **Role-based Access Control** (Admin, Editor, Viewer)
+- **JWT Authentication** with secure session management
+- **Demo User System** with persistent login
+
+### 📱 **User Experience**
+- **Responsive Design** - Works on all devices
+- **Intuitive Navigation** with breadcrumbs and sidebar
+- **Live Content Updates** - See changes immediately
+- **Search & Filter** - Find content quickly
+- **Page Detail View** - Read content in full-screen
+
+## 🛠️ Tech Stack
 
 ### Frontend
-- React 18 + TypeScript + Vite
-- React Router v6, Zustand (State Management)
-- Tailwind CSS + shadcn/ui Components
-- React Markdown + Mermaid für Diagramme
-- React Query für API-Calls
+- **React 18** + **TypeScript**
+- **Tailwind CSS** for styling
+- **Vite** for fast development
+- **Zustand** for state management
+- **React Router** for navigation
 
 ### Backend
-- Node.js + NestJS + TypeScript
-- PostgreSQL + Prisma ORM
-- JWT Authentication + Refresh Tokens
-- Multer für File Uploads
-- Nodemailer für E-Mail-Benachrichtigungen
+- **NestJS** + **TypeScript**
+- **Prisma ORM** with SQLite
+- **JWT Authentication**
+- **Swagger API Documentation**
 
 ### Infrastructure
-- Docker + Docker Compose
-- Nginx Reverse Proxy
-- PostgreSQL Database
-- File Storage (lokal oder S3-kompatibel)
+- **Docker & Docker Compose**
+- **Nginx** reverse proxy
+- **PostgreSQL** for production
 
-## Quick Start
+## 🚀 Quick Start
 
-### 1. Dependencies installieren
+### Option 1: Simple Development Setup
 
 ```bash
-# Root-Verzeichnis
+# 1. Clone the repository
+git clone https://github.com/yourusername/wikidocs.git
+cd wikidocs
+
+# 2. Install frontend dependencies
+cd app/frontend
+pnpm install
+
+# 3. Start the frontend
+pnpm dev
+```
+
+**That's it!** The app runs in demo mode at http://localhost:5173
+
+### Option 2: Full Stack Setup
+
+```bash
+# 1. Install all dependencies
 make install
 
-# Oder manuell:
-cd app/backend && pnpm install
-cd ../frontend && pnpm install
-```
-
-### 2. Environment Setup
-
-```bash
-# Backend Environment kopieren und anpassen
+# 2. Set up environment variables
 cp app/backend/.env.example app/backend/.env
-
-# Frontend Environment kopieren und anpassen
 cp app/frontend/.env.example app/frontend/.env
-```
 
-### 3. Database Setup
-
-```bash
-# PostgreSQL starten (Docker)
-docker compose up -d postgres
-
-# Database Migration
-cd app/backend
-pnpm prisma migrate dev
-pnpm prisma db seed
-```
-
-### 4. Development starten
-
-```bash
-# Alles gleichzeitig (empfohlen)
+# 3. Start development servers
 make dev
-
-# Oder einzeln:
-# Backend (Port 3001)
-cd app/backend && pnpm start:dev
-
-# Frontend (Port 5173)
-cd app/frontend && pnpm dev
 ```
 
-### 5. Production Build
+- Frontend: http://localhost:5173
+- Backend API: http://localhost:3000
+
+### Option 3: Docker Deployment
 
 ```bash
-# Komplettes System
-make build
-
-# Production starten
-docker compose up -d
+# Production deployment
+make docker-up
 ```
 
-## Makefile Commands
+Access at http://localhost
+
+## 👥 Demo Login Credentials
+
+| Role | Email | Password | Permissions |
+|------|-------|----------|-------------|
+| **Admin** | `admin@wiki.local` | `admin123` | Full access, user management |
+| **Editor** | `editor@wiki.local` | `editor123` | Create/edit content |
+| **Viewer** | `viewer@wiki.local` | `viewer123` | Read-only access |
+
+## 📁 Project Structure
+
+```
+wikidocs/
+├── 📱 app/frontend/          # React application
+│   ├── src/pages/            # Page components
+│   ├── src/stores/           # Zustand stores
+│   ├── src/components/       # Reusable components
+│   └── src/layouts/          # Layout components
+├── 🔧 app/backend/           # NestJS API
+│   ├── src/                  # Source code
+│   ├── prisma/              # Database schema & seeds
+│   └── dist/                # Built output
+├── 🐳 app/infra/            # Infrastructure
+│   ├── docker-compose.yml   # Docker setup
+│   └── nginx/               # Nginx config
+├── 📚 docs/                 # Documentation
+└── 🔨 Makefile             # Build commands
+```
+
+## 🎯 Key Features Implemented
+
+### ✅ **Content Management**
+- ✨ Create pages and spaces
+- ✨ Rich text editor with toolbar
+- ✨ Content templates (User Guide, API Docs, Meeting Notes)
+- ✨ Tag system for organization
+- ✨ Draft/Published status management
+
+### ✅ **Navigation & Views**
+- ✨ Space detail pages with statistics
+- ✨ Page detail view with full-screen reading
+- ✨ All pages overview with filtering
+- ✨ Breadcrumb navigation
+- ✨ Dynamic sidebar with space links
+
+### ✅ **Admin Features**
+- ✨ Complete admin panel
+- ✨ User management (create, edit, delete users)
+- ✨ Content overview and management
+- ✨ System settings and analytics
+- ✨ Role-based permission system
+
+### ✅ **User Experience**
+- ✨ Inline editing of pages
+- ✨ Auto-redirect after content creation
+- ✨ Responsive design for all devices
+- ✨ Hover effects and smooth transitions
+- ✨ Confirmation dialogs for destructive actions
+
+## 📖 Usage Guide
+
+### Creating Content
+1. **Login** with your credentials
+2. **Navigate** to "Create content" in the sidebar
+3. **Choose** Page or Space
+4. **Fill in** title, content, and select a space
+5. **Save as Draft** or **Publish** immediately
+
+### Managing Spaces
+1. Go to **"Documentation spaces"** in the sidebar
+2. **Create new spaces** with the + button
+3. **Click "View Space"** to see all pages in a space
+4. **Add pages** directly to specific spaces
+
+### Admin Panel
+1. **Admin users** see "Admin Panel" in the sidebar
+2. **Manage users** - create, edit, delete, change roles
+3. **View content** overview and statistics
+4. **System settings** and configuration
+
+## 🔧 Development Commands
 
 ```bash
-make install     # Dependencies installieren
-make dev         # Development starten
-make build       # Production Build
-make test        # Tests ausführen
-make lint        # Code Linting
-make seed        # Database mit Demo-Daten füllen
-make backup      # Database Backup erstellen
-make restore     # Database Backup wiederherstellen
-make clean       # Build-Artefakte löschen
+# Development
+make dev              # Start both frontend and backend
+make frontend         # Start only frontend
+make backend          # Start only backend
+
+# Building
+make build            # Build all applications
+make install          # Install all dependencies
+
+# Docker
+make docker-up        # Start with Docker Compose
+make docker-down      # Stop Docker containers
+make docker-build     # Build Docker images
+
+# Database
+make db-reset         # Reset database
+make db-seed          # Seed with demo data
 ```
 
-## Default Users (nach Seeding)
+## 🌟 Screenshots & Demo
 
-| Role | Email | Password |
-|------|-------|----------|
-| Admin | admin@wiki.local | admin123 |
-| Editor | editor@wiki.local | editor123 |
-| Viewer | viewer@wiki.local | viewer123 |
+The application features a modern, Docker-inspired interface with:
 
-## API Documentation
+- **Clean blue navigation header** with search and user menu
+- **Collapsible sidebar** with space navigation
+- **Card-based dashboard** with action tiles
+- **Rich content editor** with formatting toolbar
+- **Responsive tables** for data management
+- **Modal dialogs** for forms and confirmations
 
-Nach dem Start ist die API-Dokumentation verfügbar unter:
-- Swagger UI: http://localhost:3001/api
-- OpenAPI JSON: http://localhost:3001/api-json
+## 🤝 Contributing
 
-## Architecture
+1. **Fork** the repository
+2. **Create** a feature branch (`git checkout -b feature/amazing-feature`)
+3. **Commit** your changes (`git commit -m 'Add amazing feature'`)
+4. **Push** to the branch (`git push origin feature/amazing-feature`)
+5. **Open** a Pull Request
 
-```
-app/
-├── frontend/          # React Frontend
-│   ├── src/
-│   │   ├── components/    # Wiederverwendbare Komponenten
-│   │   ├── pages/         # Seiten-Komponenten
-│   │   ├── hooks/         # Custom React Hooks
-│   │   ├── stores/        # Zustand Stores
-│   │   ├── services/      # API Services
-│   │   └── utils/         # Utility Funktionen
-│   └── public/
-├── backend/           # NestJS Backend
-│   ├── src/
-│   │   ├── auth/          # Authentication Module
-│   │   ├── users/         # User Management
-│   │   ├── spaces/        # Space Management
-│   │   ├── pages/         # Page Management
-│   │   ├── search/        # Full-Text Search
-│   │   ├── attachments/   # File Upload/Download
-│   │   ├── audit/         # Audit Logging
-│   │   └── common/        # Shared Code
-│   └── prisma/            # Database Schema & Migrations
-└── infra/             # Infrastructure
-    ├── docker-compose.yml
-    ├── nginx.conf
-    └── scripts/
-```
+## 📄 License
 
-## Security Features
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
 
-- 🔒 HTTPS-only mit HSTS
-- 🛡️ JWT + Refresh Token Pattern
-- 🔐 Argon2id Password Hashing
-- 🚦 Rate Limiting für kritische Endpoints
-- 🧹 Input Validation & Sanitization
-- 🎭 Content Security Policy (CSP)
-- 📝 Comprehensive Audit Logging
-- 🔍 SQL Injection Prevention (Prisma ORM)
-- 📤 Secure File Upload/Download
+## 💬 Support
 
-## Backup & Restore
+- 🐛 **Issues**: [GitHub Issues](https://github.com/yourusername/wikidocs/issues)
+- 📖 **Documentation**: Check the `/docs` folder
+- 🏗️ **Architecture**: See `docs/ARCHITECTURE.md`
 
-```bash
-# Backup erstellen
-make backup
+---
 
-# Backup wiederherstellen
-make restore BACKUP_FILE=backup-2023-10-07.sql
-```
-
-## Environment Variables
-
-### Backend (.env)
-```bash
-DATABASE_URL="postgresql://wiki:wiki@localhost:5432/wiki"
-JWT_SECRET="your-jwt-secret-here"
-JWT_REFRESH_SECRET="your-refresh-secret-here"
-SMTP_HOST="localhost"
-SMTP_PORT=587
-SMTP_USER="wiki@example.com"
-SMTP_PASS="password"
-UPLOAD_DIR="./uploads"
-```
-
-### Frontend (.env)
-```bash
-VITE_API_URL="http://localhost:3001"
-VITE_APP_NAME="Wiki System"
-```
-
-## Contributing
-
-1. Fork das Repository
-2. Feature Branch erstellen (`git checkout -b feature/amazing-feature`)
-3. Änderungen committen (`git commit -m 'Add amazing feature'`)
-4. Branch pushen (`git push origin feature/amazing-feature`)
-5. Pull Request erstellen
-
-## License
-
-MIT License - siehe LICENSE Datei für Details.
+**Made with ❤️ using React, TypeScript, and NestJS**
