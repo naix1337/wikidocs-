@@ -1,0 +1,106 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: wiki-postgres
+    environment:
+      POSTGRES_DB: wiki
+      POSTGRES_USER: wiki
+      POSTGRES_PASSWORD: wiki
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./postgres/init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U wiki -d wiki"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - wiki-network
+
+  # Redis for caching (optional)
+  redis:
+    image: redis:7-alpine
+    container_name: wiki-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - wiki-network
+
+  # Backend API
+  backend:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    container_name: wiki-backend
+    environment:
+      DATABASE_URL: postgresql://wiki:wiki@postgres:5432/wiki
+      REDIS_URL: redis://redis:6379
+      NODE_ENV: production
+      JWT_SECRET: ${JWT_SECRET:-your-super-secret-jwt-key}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-your-super-secret-refresh-key}
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost}
+    ports:
+      - "3001:3001"
+    volumes:
+      - uploads_data:/app/uploads
+      - backups_data:/app/backups
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - wiki-network
+    restart: unless-stopped
+
+  # Frontend
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+    container_name: wiki-frontend
+    environment:
+      VITE_API_URL: ${API_URL:-http://localhost:3001}
+    depends_on:
+      - backend
+    networks:
+      - wiki-network
+    restart: unless-stopped
+
+  # Nginx Reverse Proxy
+  nginx:
+    image: nginx:alpine
+    container_name: wiki-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+      - uploads_data:/var/www/uploads:ro
+    depends_on:
+      - backend
+      - frontend
+    networks:
+      - wiki-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  uploads_data:
+    driver: local
+  backups_data:
+    driver: local
+
+networks:
+  wiki-network:
+    driver: bridge

@@ -1,0 +1,99 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  passwordHash String
+  name      String
+  role      String   @default("VIEWER")
+  isActive  Boolean  @default(true)
+  lastLogin DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  createdSpaces    Space[] @relation("SpaceCreator")
+  createdPages     Page[]  @relation("PageCreator")
+  pageContents     PageContent[]
+  refreshTokens    RefreshToken[]
+
+  @@map("users")
+}
+
+model RefreshToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("refresh_tokens")
+}
+
+model Space {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String?
+  visibility  String   @default("PRIVATE")
+  createdBy   String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  creator User   @relation("SpaceCreator", fields: [createdBy], references: [id])
+  pages   Page[]
+
+  @@map("spaces")
+}
+
+model Page {
+  id          String    @id @default(cuid())
+  spaceId     String
+  title       String
+  slug        String
+  status      String    @default("DRAFT")
+  publishedAt DateTime?
+  createdBy   String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  space    Space         @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  creator  User          @relation("PageCreator", fields: [createdBy], references: [id])
+  contents PageContent[]
+
+  @@unique([spaceId, slug])
+  @@map("pages")
+}
+
+model PageContent {
+  id          String   @id @default(cuid())
+  pageId      String
+  version     Int      @default(1)
+  markdown    String
+  frontmatter String?
+  createdBy   String
+  createdAt   DateTime @default(now())
+
+  page    Page @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  creator User @relation(fields: [createdBy], references: [id])
+
+  @@unique([pageId, version])
+  @@map("page_contents")
+}
+
+model Tag {
+  id    String @id @default(cuid())
+  name  String @unique
+  slug  String @unique
+  color String @default("#6B7280")
+
+  @@map("tags")
+}
