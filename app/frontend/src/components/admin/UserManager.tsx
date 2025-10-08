@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useAuthStore } from '../../stores/authStore';
+import { useInviteCodeStore } from '../../stores/inviteCodeStore';
 
 interface User {
   id: string;
@@ -69,10 +70,13 @@ const demoUsers: User[] = [
 
 export const UserManager: React.FC = () => {
   const { user: currentUser } = useAuthStore();
+  const { generateInviteCode, getInviteCodes } = useInviteCodeStore();
   const [users, setUsers] = useState<User[]>(demoUsers);
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showInviteModal, setShowInviteModal] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
+  const [generatedCode, setGeneratedCode] = useState<string>('');
   const [filters, setFilters] = useState<UserFilters>({
     search: '',
     role: '',
@@ -153,6 +157,19 @@ export const UserManager: React.FC = () => {
     }
   };
 
+  const handleGenerateInviteCode = () => {
+    if (currentUser) {
+      const code = generateInviteCode(currentUser.id, 7); // 7 days expiry
+      setGeneratedCode(code);
+      setShowInviteModal(true);
+    }
+  };
+
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text);
+    // Could add a toast notification here
+  };
+
   const getRoleBadgeClass = (role: string) => {
     switch (role) {
       case 'ADMIN':
@@ -210,15 +227,26 @@ export const UserManager: React.FC = () => {
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white">User Management</h2>
           <p className="text-gray-600 dark:text-gray-300">Manage user accounts, roles, and permissions</p>
         </div>
-        <button
-          onClick={() => setShowCreateModal(true)}
-          className="bg-blue-600 dark:bg-blue-700 text-white px-4 py-2 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors flex items-center space-x-2"
-        >
-          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-          </svg>
-          <span>Add User</span>
-        </button>
+        <div className="flex space-x-3">
+          <button
+            onClick={() => setShowCreateModal(true)}
+            className="bg-blue-600 dark:bg-blue-700 text-white px-4 py-2 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors flex items-center space-x-2"
+          >
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+            </svg>
+            <span>Add User</span>
+          </button>
+          <button
+            onClick={handleGenerateInviteCode}
+            className="bg-green-600 dark:bg-green-700 text-white px-4 py-2 rounded-lg hover:bg-green-700 dark:hover:bg-green-600 transition-colors flex items-center space-x-2"
+          >
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+            </svg>
+            <span>Generate Invite Code</span>
+          </button>
+        </div>
       </div>
 
       {/* Stats Cards */}
@@ -539,6 +567,83 @@ export const UserManager: React.FC = () => {
           onClose={() => setEditingUser(null)}
           onSubmit={handleUpdateUser}
         />
+      )}
+
+      {/* Invite Code Modal */}
+      {showInviteModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 w-full max-w-md mx-4">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Generated Invite Code</h3>
+              <button
+                onClick={() => setShowInviteModal(false)}
+                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+              >
+                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">
+                Share this invite code with new users. It will expire in 7 days.
+              </p>
+              
+              <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600">
+                <div className="flex items-center justify-between">
+                  <code className="text-lg font-mono font-bold text-blue-600 dark:text-blue-400">
+                    {generatedCode}
+                  </code>
+                  <button
+                    onClick={() => copyToClipboard(generatedCode)}
+                    className="ml-3 p-2 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+                    title="Copy to clipboard"
+                  >
+                    <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-blue-50 dark:bg-blue-900/30 p-4 rounded-lg mb-4">
+              <div className="flex items-start">
+                <svg className="h-5 w-5 text-blue-600 dark:text-blue-400 mt-0.5 mr-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <div className="text-sm text-blue-800 dark:text-blue-200">
+                  <p className="font-medium mb-1">Instructions for new users:</p>
+                  <ol className="list-decimal list-inside space-y-1">
+                    <li>Go to the login page</li>
+                    <li>Click "Register with invite code"</li>
+                    <li>Enter this invite code: <code className="bg-blue-100 dark:bg-blue-800 px-1 rounded">{generatedCode}</code></li>
+                    <li>Fill out their registration details</li>
+                  </ol>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex justify-end space-x-3">
+              <button
+                onClick={() => setShowInviteModal(false)}
+                className="px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+              >
+                Close
+              </button>
+              <button
+                onClick={() => copyToClipboard(generatedCode)}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
+              >
+                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                </svg>
+                <span>Copy Code</span>
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
