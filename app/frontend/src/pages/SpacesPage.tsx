@@ -55,12 +55,12 @@ const SpacesPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Breadcrumb */}
-      <div className="bg-white border-b border-gray-200">
+      <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
         <div className="max-w-7xl mx-auto px-6 py-3">
-          <nav className="text-sm text-gray-500">
-            <span className="text-blue-600">WikiDocs</span> &gt; Documentation Spaces
+          <nav className="text-sm text-gray-500 dark:text-gray-400">
+            <span className="text-blue-600 dark:text-blue-400">WikiDocs</span> &gt; Documentation Spaces
           </nav>
         </div>
       </div>
@@ -69,13 +69,13 @@ const SpacesPage: React.FC = () => {
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Documentation Spaces</h1>
-            <p className="text-gray-600">Organize your documentation into logical spaces and categories.</p>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Documentation Spaces</h1>
+            <p className="text-gray-600 dark:text-gray-300">Organize your documentation into logical spaces and categories.</p>
           </div>
           {canEdit && (
             <button
               onClick={() => setShowCreateModal(true)}
-              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
+              className="bg-blue-600 dark:bg-blue-700 text-white px-4 py-2 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors flex items-center space-x-2"
             >
               <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -88,19 +88,19 @@ const SpacesPage: React.FC = () => {
         {/* Spaces Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {spaces.map((space) => (
-            <div key={space.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+            <div key={space.id} className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition-shadow">
               {/* Space Header */}
               <div className="flex justify-between items-start mb-4">
                 <div className="flex items-center">
-                  <div className="bg-blue-100 p-2 rounded-lg mr-3">
-                    <svg className="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <div className="bg-blue-100 dark:bg-blue-900 p-2 rounded-lg mr-3">
+                    <svg className="h-6 w-6 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                     </svg>
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900">{space.name}</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{space.name}</h3>
                     <span className={`inline-block px-2 py-1 text-xs rounded-full ${
-                      space.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                      space.status === 'active' ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-300' : 'bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-300'
                     }`}>
                       {space.status}
                     </span>
@@ -111,7 +111,7 @@ const SpacesPage: React.FC = () => {
                   <div className="flex space-x-2">
                     <button
                       onClick={() => handleEditSpace(space)}
-                      className="text-gray-400 hover:text-blue-600 transition-colors"
+                      className="text-gray-400 dark:text-gray-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                       title="Edit space"
                     >
                       <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -121,7 +121,7 @@ const SpacesPage: React.FC = () => {
                     {canDelete && (
                       <button
                         onClick={() => handleDeleteSpace(space.id)}
-                        className="text-gray-400 hover:text-red-600 transition-colors"
+                        className="text-gray-400 dark:text-gray-500 hover:text-red-600 dark:hover:text-red-400 transition-colors"
                         title="Delete space"
                       >
                         <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -134,17 +134,17 @@ const SpacesPage: React.FC = () => {
               </div>
 
               {/* Space Description */}
-              <p className="text-gray-600 mb-4">{space.description}</p>
+              <p className="text-gray-600 dark:text-gray-300 mb-4">{space.description}</p>
 
               {/* Space Stats */}
-              <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
+              <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400 mb-4">
                 <span>{space.pageCount} pages</span>
                 <span>Modified {space.lastModified}</span>
               </div>
 
               {/* Contributors */}
               <div className="flex items-center space-x-2 mb-4">
-                <span className="text-sm text-gray-500">Contributors:</span>
+                <span className="text-sm text-gray-500 dark:text-gray-400">Contributors:</span>
                 <div className="flex -space-x-1">
                   {space.contributors.slice(0, 3).map((contributor, index) => (
                     <div

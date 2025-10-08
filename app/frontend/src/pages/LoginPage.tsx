@@ -1,14 +1,21 @@
 import React, { useState } from 'react';
 import { useAuthStore } from '../stores/authStore';
+import { useInviteCodeStore } from '../stores/inviteCodeStore';
 import { Navigate } from 'react-router-dom';
 
 const LoginPage: React.FC = () => {
+  const [isLoginMode, setIsLoginMode] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [inviteCode, setInviteCode] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   
-  const { login, isAuthenticated } = useAuthStore();
+  const { login, register, isAuthenticated } = useAuthStore();
+  const inviteStore = useInviteCodeStore();
 
   if (isAuthenticated) {
     return <Navigate to="/dashboard" replace />;
@@ -19,13 +26,60 @@ const LoginPage: React.FC = () => {
     setLoading(true);
     setError('');
 
-    const success = await login(email, password);
-    
-    if (!success) {
-      setError('Invalid email or password');
+    if (isLoginMode) {
+      // Handle login
+      const success = await login(email, password);
+      if (!success) {
+        setError('Invalid email or password');
+      }
+    } else {
+      // Handle registration
+      if (password !== confirmPassword) {
+        setError('Passwords do not match');
+        setLoading(false);
+        return;
+      }
+
+      if (password.length < 6) {
+        setError('Password must be at least 6 characters long');
+        setLoading(false);
+        return;
+      }
+
+      // Validate invite code
+      const validation = inviteStore.validateInviteCode(inviteCode);
+      if (!validation.valid) {
+        setError(validation.error || 'Invalid invite code');
+        setLoading(false);
+        return;
+      }
+
+      // Register user
+      const success = await register(email, password, firstName, lastName);
+      if (success) {
+        // Use the invite code
+        inviteStore.useInviteCode(inviteCode, email, `${firstName} ${lastName}`);
+      } else {
+        setError('Registration failed. Email might already be in use.');
+      }
     }
     
     setLoading(false);
+  };
+
+  const resetForm = () => {
+    setEmail('');
+    setPassword('');
+    setConfirmPassword('');
+    setInviteCode('');
+    setFirstName('');
+    setLastName('');
+    setError('');
+  };
+
+  const toggleMode = () => {
+    setIsLoginMode(!isLoginMode);
+    resetForm();
   };
 
   return (
@@ -41,10 +95,13 @@ const LoginPage: React.FC = () => {
             WikiDocs
           </h1>
           <h2 className="text-lg font-medium text-gray-700 mb-1">
-            Welcome back
+            {isLoginMode ? 'Welcome back' : 'Join WikiDocs'}
           </h2>
           <p className="text-gray-500 text-sm">
-            Sign in to your documentation workspace
+            {isLoginMode 
+              ? 'Sign in to your documentation workspace' 
+              : 'Create your account with an invite code'
+            }
           </p>
         </div>
         
@@ -57,6 +114,63 @@ const LoginPage: React.FC = () => {
                 </svg>
                 {error}
               </div>
+            )}
+
+            {/* Registration fields */}
+            {!isLoginMode && (
+              <>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-1">
+                      First Name
+                    </label>
+                    <input
+                      id="firstName"
+                      name="firstName"
+                      type="text"
+                      required
+                      className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-sm"
+                      placeholder="John"
+                      value={firstName}
+                      onChange={(e) => setFirstName(e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-1">
+                      Last Name
+                    </label>
+                    <input
+                      id="lastName"
+                      name="lastName"
+                      type="text"
+                      required
+                      className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-sm"
+                      placeholder="Doe"
+                      value={lastName}
+                      onChange={(e) => setLastName(e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label htmlFor="inviteCode" className="block text-sm font-medium text-gray-700 mb-1">
+                    Invite Code
+                  </label>
+                  <input
+                    id="inviteCode"
+                    name="inviteCode"
+                    type="text"
+                    required
+                    className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-sm"
+                    placeholder="Enter your invite code"
+                    value={inviteCode}
+                    onChange={(e) => setInviteCode(e.target.value.toUpperCase())}
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    You need an invite code from an administrator to register
+                  </p>
+                </div>
+              </>
             )}
             
             <div>
@@ -84,14 +198,34 @@ const LoginPage: React.FC = () => {
                 id="password"
                 name="password"
                 type="password"
-                autoComplete="current-password"
+                autoComplete={isLoginMode ? "current-password" : "new-password"}
                 required
                 className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-sm"
-                placeholder="Enter your password"
+                placeholder={isLoginMode ? "Enter your password" : "Choose a password (min. 6 characters)"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
+
+            {/* Confirm password for registration */}
+            {!isLoginMode && (
+              <div>
+                <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
+                  Confirm Password
+                </label>
+                <input
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  type="password"
+                  autoComplete="new-password"
+                  required
+                  className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-sm"
+                  placeholder="Confirm your password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                />
+              </div>
+            )}
 
             <button
               type="submit"
@@ -104,13 +238,27 @@ const LoginPage: React.FC = () => {
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
-                  Signing in...
+                  {isLoginMode ? 'Signing in...' : 'Creating account...'}
                 </div>
               ) : (
-                'Sign in to WikiDocs'
+                isLoginMode ? 'Sign in to WikiDocs' : 'Create Account'
               )}
             </button>
           </form>
+
+          {/* Toggle between login and register */}
+          <div className="mt-4 text-center">
+            <button
+              type="button"
+              onClick={toggleMode}
+              className="text-sm text-blue-600 hover:text-blue-800 transition-colors"
+            >
+              {isLoginMode 
+                ? "Don't have an account? Register with invite code" 
+                : 'Already have an account? Sign in'
+              }
+            </button>
+          </div>
         </div>
 
         <div className="bg-blue-50 border border-blue-100 rounded-lg p-4">

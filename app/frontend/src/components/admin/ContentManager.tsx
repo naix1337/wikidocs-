@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { useContentStore } from '../../stores/contentStore';
+import useContentStore from '../../stores/contentStore';
 import { useAuthStore } from '../../stores/authStore';
 
 interface ContentFilters {
@@ -10,7 +10,7 @@ interface ContentFilters {
 }
 
 export const ContentManager: React.FC = () => {
-  const { pages, spaces, createPage, updatePage, deletePage, createSpace, deleteSpace } = useContentStore();
+  const { pages, spaces, addPage, updatePage, deletePage, addSpace, deleteSpace } = useContentStore();
   const { user } = useAuthStore();
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -65,7 +65,7 @@ export const ContentManager: React.FC = () => {
     }
   };
 
-  const handleBulkStatusChange = (status: 'published' | 'draft' | 'archived') => {
+  const handleBulkStatusChange = (status: 'published' | 'draft') => {
     selectedItems.forEach(id => {
       const page = pages.find(p => p.id === id);
       if (page) {
@@ -76,28 +76,23 @@ export const ContentManager: React.FC = () => {
   };
 
   const handleCreatePage = (formData: any) => {
-    createPage({
-      id: Date.now().toString(),
+    addPage({
       title: formData.title,
       content: formData.content,
       spaceId: formData.spaceId,
       status: formData.status || 'draft',
       author: user?.email || 'Unknown',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      tags: formData.tags || []
     });
     setShowCreateModal(false);
   };
 
   const handleCreateSpace = (formData: any) => {
-    createSpace({
-      id: Date.now().toString(),
+    addSpace({
       name: formData.name,
       description: formData.description,
-      icon: formData.icon || '📁',
-      color: formData.color || 'blue',
-      createdAt: new Date().toISOString(),
-      pageCount: 0
+      status: 'active',
+      contributors: [user?.email || 'Unknown']
     });
     setShowSpaceModal(false);
   };
@@ -113,8 +108,6 @@ export const ContentManager: React.FC = () => {
         return 'bg-green-100 text-green-800';
       case 'draft':
         return 'bg-yellow-100 text-yellow-800';
-      case 'archived':
-        return 'bg-gray-100 text-gray-800';
       default:
         return 'bg-blue-100 text-blue-800';
     }
@@ -154,84 +147,84 @@ export const ContentManager: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <div className="flex items-center">
-            <div className="p-2 bg-blue-100 rounded-lg">
-              <svg className="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="p-2 bg-blue-100 dark:bg-blue-900 rounded-lg">
+              <svg className="h-6 w-6 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Total Pages</p>
-              <p className="text-2xl font-semibold text-gray-900">{pages.length}</p>
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Pages</p>
+              <p className="text-2xl font-semibold text-gray-900 dark:text-white">{pages.length}</p>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
           <div className="flex items-center">
-            <div className="p-2 bg-green-100 rounded-lg">
-              <svg className="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="p-2 bg-green-100 dark:bg-green-900 rounded-lg">
+              <svg className="h-6 w-6 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Published</p>
-              <p className="text-2xl font-semibold text-gray-900">
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Published</p>
+              <p className="text-2xl font-semibold text-gray-900 dark:text-white">
                 {pages.filter(p => p.status === 'published').length}
               </p>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
           <div className="flex items-center">
-            <div className="p-2 bg-yellow-100 rounded-lg">
-              <svg className="h-6 w-6 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="p-2 bg-yellow-100 dark:bg-yellow-900 rounded-lg">
+              <svg className="h-6 w-6 text-yellow-600 dark:text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
               </svg>
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Drafts</p>
-              <p className="text-2xl font-semibold text-gray-900">
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Drafts</p>
+              <p className="text-2xl font-semibold text-gray-900 dark:text-white">
                 {pages.filter(p => p.status === 'draft').length}
               </p>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
           <div className="flex items-center">
-            <div className="p-2 bg-purple-100 rounded-lg">
-              <svg className="h-6 w-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="p-2 bg-purple-100 dark:bg-purple-900 rounded-lg">
+              <svg className="h-6 w-6 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2-2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
               </svg>
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Spaces</p>
-              <p className="text-2xl font-semibold text-gray-900">{spaces.length}</p>
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Spaces</p>
+              <p className="text-2xl font-semibold text-gray-900 dark:text-white">{spaces.length}</p>
             </div>
           </div>
         </div>
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Search</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Search</label>
             <input
               type="text"
               placeholder="Search pages..."
               value={filters.search}
               onChange={(e) => setFilters(prev => ({ ...prev, search: e.target.value }))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Space</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Space</label>
             <select
               value={filters.space}
               onChange={(e) => setFilters(prev => ({ ...prev, space: e.target.value }))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
             >
               <option value="">All Spaces</option>
               {spaces.map(space => (
@@ -240,24 +233,23 @@ export const ContentManager: React.FC = () => {
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Status</label>
             <select
               value={filters.status}
               onChange={(e) => setFilters(prev => ({ ...prev, status: e.target.value }))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
             >
               <option value="">All Status</option>
               <option value="published">Published</option>
               <option value="draft">Draft</option>
-              <option value="archived">Archived</option>
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Author</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Author</label>
             <select
               value={filters.author}
               onChange={(e) => setFilters(prev => ({ ...prev, author: e.target.value }))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
             >
               <option value="">All Authors</option>
               {authors.map(author => (
@@ -270,9 +262,9 @@ export const ContentManager: React.FC = () => {
 
       {/* Bulk Actions */}
       {selectedItems.length > 0 && (
-        <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
+        <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-4">
           <div className="flex items-center justify-between">
-            <span className="text-blue-800 font-medium">
+            <span className="text-blue-800 dark:text-blue-200 font-medium">
               {selectedItems.length} item{selectedItems.length > 1 ? 's' : ''} selected
             </span>
             <div className="flex space-x-2">
@@ -289,12 +281,6 @@ export const ContentManager: React.FC = () => {
                 Draft
               </button>
               <button
-                onClick={() => handleBulkStatusChange('archived')}
-                className="px-3 py-1 bg-gray-600 text-white rounded hover:bg-gray-700 text-sm"
-              >
-                Archive
-              </button>
-              <button
                 onClick={handleBulkDelete}
                 className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 text-sm"
               >
@@ -306,10 +292,10 @@ export const ContentManager: React.FC = () => {
       )}
 
       {/* Content Table */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <thead className="bg-gray-50 dark:bg-gray-900">
               <tr>
                 <th className="px-6 py-3 text-left">
                   <input
@@ -319,62 +305,62 @@ export const ContentManager: React.FC = () => {
                     className="rounded border-gray-300"
                   />
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   Title
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   Space
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   Author
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   Status
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   Updated
                 </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   Actions
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
               {filteredPages.map((page) => (
-                <tr key={page.id} className="hover:bg-gray-50">
+                <tr key={page.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                   <td className="px-6 py-4">
                     <input
                       type="checkbox"
                       checked={selectedItems.includes(page.id)}
                       onChange={() => handleSelectItem(page.id)}
-                      className="rounded border-gray-300"
+                      className="rounded border-gray-300 dark:border-gray-600 dark:bg-gray-700"
                     />
                   </td>
                   <td className="px-6 py-4">
-                    <div className="text-sm font-medium text-gray-900">{page.title}</div>
-                    <div className="text-sm text-gray-500 truncate max-w-xs">
+                    <div className="text-sm font-medium text-gray-900 dark:text-white">{page.title}</div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400 truncate max-w-xs">
                       {page.content.substring(0, 100)}...
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">{getSpaceName(page.spaceId)}</div>
+                    <div className="text-sm text-gray-900 dark:text-white">{getSpaceName(page.spaceId)}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">{page.author}</div>
+                    <div className="text-sm text-gray-900 dark:text-white">{page.author}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusBadgeClass(page.status)}`}>
                       {page.status}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                     {new Date(page.updatedAt).toLocaleDateString()}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <div className="flex justify-end space-x-2">
                       <button
                         onClick={() => setEditingItem(page)}
-                        className="text-blue-600 hover:text-blue-900"
+                        className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300"
                       >
                         Edit
                       </button>
@@ -384,7 +370,7 @@ export const ContentManager: React.FC = () => {
                             deletePage(page.id);
                           }
                         }}
-                        className="text-red-600 hover:text-red-900"
+                        className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300"
                       >
                         Delete
                       </button>
@@ -398,18 +384,18 @@ export const ContentManager: React.FC = () => {
       </div>
 
       {/* Spaces Management */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Spaces Management</h3>
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Spaces Management</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {spaces.map(space => (
-            <div key={space.id} className="border border-gray-200 rounded-lg p-4">
+            <div key={space.id} className="border border-gray-200 dark:border-gray-600 rounded-lg p-4 bg-gray-50 dark:bg-gray-700">
               <div className="flex items-start justify-between">
                 <div className="flex items-center space-x-3">
-                  <span className="text-2xl">{space.icon}</span>
+                  <span className="text-2xl">📁</span>
                   <div>
-                    <h4 className="font-medium text-gray-900">{space.name}</h4>
-                    <p className="text-sm text-gray-500">{space.description}</p>
-                    <p className="text-xs text-gray-400">{space.pageCount} pages</p>
+                    <h4 className="font-medium text-gray-900 dark:text-white">{space.name}</h4>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">{space.description}</p>
+                    <p className="text-xs text-gray-400 dark:text-gray-500">{space.pageCount} pages</p>
                   </div>
                 </div>
                 <button
@@ -715,7 +701,6 @@ const EditPageModal: React.FC<{
             >
               <option value="draft">Draft</option>
               <option value="published">Published</option>
-              <option value="archived">Archived</option>
             </select>
           </div>
           <div className="flex justify-end space-x-3 mt-6">

@@ -109,13 +109,13 @@ export const SystemSettings: React.FC = () => {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">System Settings</h2>
-          <p className="text-gray-600">Configure your WikiDocs installation</p>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">System Settings</h2>
+          <p className="text-gray-600 dark:text-gray-300">Configure your WikiDocs installation</p>
         </div>
         <button
           onClick={handleSave}
           disabled={isSaving}
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2 disabled:opacity-50"
+          className="bg-blue-600 dark:bg-blue-700 text-white px-4 py-2 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors flex items-center space-x-2 disabled:opacity-50"
         >
           {isSaving ? (
             <>
@@ -137,16 +137,16 @@ export const SystemSettings: React.FC = () => {
       </div>
 
       {/* Tabs Navigation */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200">
-        <div className="flex border-b border-gray-200">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+        <div className="flex border-b border-gray-200 dark:border-gray-700">
           {tabs.map(tab => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={`px-6 py-4 text-sm font-medium transition-colors ${
                 activeTab === tab.id
-                  ? 'border-b-2 border-blue-500 text-blue-600 bg-blue-50'
-                  : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
+                  ? 'border-b-2 border-blue-500 dark:border-blue-400 text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20'
+                  : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
               }`}
             >
               <span className="mr-2">{tab.icon}</span>
@@ -161,20 +161,20 @@ export const SystemSettings: React.FC = () => {
             <div className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Site Name</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Site Name</label>
                   <input
                     type="text"
                     value={config.siteName}
                     onChange={(e) => setConfig(prev => ({ ...prev, siteName: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Language</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Language</label>
                   <select
                     value={config.language}
                     onChange={(e) => setConfig(prev => ({ ...prev, language: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
                   >
                     <option value="en">English</option>
                     <option value="de">Deutsch</option>
@@ -185,22 +185,22 @@ export const SystemSettings: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Site Description</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Site Description</label>
                 <textarea
                   rows={3}
                   value={config.siteDescription}
                   onChange={(e) => setConfig(prev => ({ ...prev, siteDescription: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
                 />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Timezone</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Timezone</label>
                   <select
                     value={config.timezone}
                     onChange={(e) => setConfig(prev => ({ ...prev, timezone: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
                   >
                     <option value="UTC">UTC</option>
                     <option value="Europe/Berlin">Europe/Berlin</option>
@@ -209,12 +209,12 @@ export const SystemSettings: React.FC = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Max File Size (MB)</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Max File Size (MB)</label>
                   <input
                     type="number"
                     value={config.maxFileSize}
                     onChange={(e) => setConfig(prev => ({ ...prev, maxFileSize: parseInt(e.target.value) }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
                   />
                 </div>
               </div>
@@ -226,9 +226,9 @@ export const SystemSettings: React.FC = () => {
                     id="emailNotifications"
                     checked={config.emailNotifications}
                     onChange={(e) => setConfig(prev => ({ ...prev, emailNotifications: e.target.checked }))}
-                    className="rounded border-gray-300"
+                    className="rounded border-gray-300 dark:border-gray-600 dark:bg-gray-700"
                   />
-                  <label htmlFor="emailNotifications" className="ml-2 text-sm text-gray-700">
+                  <label htmlFor="emailNotifications" className="ml-2 text-sm text-gray-700 dark:text-gray-300">
                     Enable email notifications
                   </label>
                 </div>
@@ -239,9 +239,9 @@ export const SystemSettings: React.FC = () => {
                     id="registrationEnabled"
                     checked={config.registrationEnabled}
                     onChange={(e) => setConfig(prev => ({ ...prev, registrationEnabled: e.target.checked }))}
-                    className="rounded border-gray-300"
+                    className="rounded border-gray-300 dark:border-gray-600 dark:bg-gray-700"
                   />
-                  <label htmlFor="registrationEnabled" className="ml-2 text-sm text-gray-700">
+                  <label htmlFor="registrationEnabled" className="ml-2 text-sm text-gray-700 dark:text-gray-300">
                     Allow user registration
                   </label>
                 </div>
@@ -252,9 +252,9 @@ export const SystemSettings: React.FC = () => {
                     id="debugMode"
                     checked={config.debugMode}
                     onChange={(e) => setConfig(prev => ({ ...prev, debugMode: e.target.checked }))}
-                    className="rounded border-gray-300"
+                    className="rounded border-gray-300 dark:border-gray-600 dark:bg-gray-700"
                   />
-                  <label htmlFor="debugMode" className="ml-2 text-sm text-gray-700">
+                  <label htmlFor="debugMode" className="ml-2 text-sm text-gray-700 dark:text-gray-300">
                     Enable debug mode
                   </label>
                 </div>
@@ -266,7 +266,7 @@ export const SystemSettings: React.FC = () => {
           {activeTab === 'appearance' && (
             <div className="space-y-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Logo URL</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Logo URL</label>
                 <input
                   type="url"
                   value={config.logoUrl}

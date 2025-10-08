@@ -73,6 +73,49 @@
   body {
     @apply bg-background text-foreground;
   }
+  
+  /* Global dark mode improvements for admin components */
+  .dark input,
+  .dark textarea,
+  .dark select {
+    @apply bg-gray-800 border-gray-600 text-white placeholder-gray-400;
+  }
+  
+  .dark input:focus,
+  .dark textarea:focus,
+  .dark select:focus {
+    @apply ring-blue-500 border-blue-500 bg-gray-700;
+  }
+  
+  .dark table {
+    @apply bg-gray-800;
+  }
+  
+  .dark th {
+    @apply bg-gray-700 text-gray-200 border-gray-600;
+  }
+  
+  .dark td {
+    @apply border-gray-600 text-gray-300;
+  }
+  
+  .dark tr:hover {
+    @apply bg-gray-700;
+  }
+  
+  .dark .modal-overlay {
+    @apply bg-gray-900 bg-opacity-80;
+  }
+  
+  /* Fix checkbox styling in dark mode */
+  .dark input[type="checkbox"] {
+    @apply bg-gray-700 border-gray-600 text-blue-600;
+  }
+  
+  /* Fix option elements in dark mode */
+  .dark option {
+    @apply bg-gray-700 text-white;
+  }
 }
 
 /* Custom scrollbar */

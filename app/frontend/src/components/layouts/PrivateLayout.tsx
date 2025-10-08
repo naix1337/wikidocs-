@@ -1,6 +1,7 @@
 import React from 'react';
 import { useAuthStore } from '../../stores/authStore';
 import useContentStore from '../../stores/contentStore';
+import ThemeToggle from '../ui/ThemeToggle';
 
 interface PrivateLayoutProps {
   children: React.ReactNode;
@@ -11,9 +12,9 @@ const PrivateLayout: React.FC<PrivateLayoutProps> = ({ children }) => {
   const { spaces } = useContentStore();
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Docker-style blue header */}
-      <header className="bg-blue-600 shadow-sm">
+      <header className="bg-blue-600 dark:bg-blue-800 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-8">
@@ -63,6 +64,9 @@ const PrivateLayout: React.FC<PrivateLayoutProps> = ({ children }) => {
               </div>
 
               <div className="flex items-center space-x-3">
+                {/* Theme Toggle */}
+                <ThemeToggle />
+                
                 <div className="text-right">
                   <p className="text-sm font-medium text-white">{user?.displayName}</p>
                   <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-white ${user?.role === 'ADMIN' ? 'text-red-700' : user?.role === 'EDITOR' ? 'text-blue-700' : 'text-green-700'}`}>
@@ -91,39 +95,39 @@ const PrivateLayout: React.FC<PrivateLayoutProps> = ({ children }) => {
       </header>
       
       <div className="flex">
-        <nav className="w-64 bg-white shadow-sm min-h-screen border-r border-gray-200">
+        <nav className="w-64 bg-white dark:bg-gray-800 shadow-sm min-h-screen border-r border-gray-200 dark:border-gray-700">
           <div className="p-6">
             {/* Get WikiDocs section */}
             <div className="mb-6">
-              <h2 className="text-sm font-medium text-gray-900 mb-3">Get WikiDocs</h2>
+              <h2 className="text-sm font-medium text-gray-900 dark:text-white mb-3">Get WikiDocs</h2>
               <ul className="space-y-1">
                 <li>
-                  <a href="/dashboard" className="text-sm text-blue-600 hover:text-blue-800 transition-colors">What is WikiDocs?</a>
+                  <a href="/dashboard" className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors">What is WikiDocs?</a>
                 </li>
                 <li>
-                  <a href="/dashboard" className="text-sm text-blue-600 hover:text-blue-800 transition-colors">Introduction</a>
+                  <a href="/dashboard" className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors">Introduction</a>
                 </li>
                 <li>
-                  <a href="#" className="text-sm text-blue-600 hover:text-blue-800 transition-colors">WikiDocs concepts</a>
+                  <a href="#" className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors">WikiDocs concepts</a>
                 </li>
                 <li>
-                  <a href="#" className="text-sm text-blue-600 hover:text-blue-800 transition-colors">WikiDocs workshop</a>
+                  <a href="#" className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors">WikiDocs workshop</a>
                 </li>
                 <li>
-                  <a href="#" className="text-sm text-blue-600 hover:text-blue-800 transition-colors">Educational resources</a>
+                  <a href="#" className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors">Educational resources</a>
                 </li>
               </ul>
             </div>
 
             {/* Content Management section */}
             <div className="mb-6">
-              <button className="flex items-center justify-between w-full text-left text-sm font-medium text-gray-900 mb-3">
+              <button className="flex items-center justify-between w-full text-left text-sm font-medium text-gray-900 dark:text-white mb-3">
                 <span>Content Management</span>
-                <svg className="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="h-4 w-4 text-gray-400 dark:text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
-              <ul className="space-y-1 ml-3 border-l border-gray-200 pl-3">
+              <ul className="space-y-1 ml-3 border-l border-gray-200 dark:border-gray-600 pl-3">
                 <li>
                   <a href="/spaces" className="text-sm text-blue-600 hover:text-blue-800 transition-colors">Documentation spaces</a>
                 </li>
@@ -136,10 +140,10 @@ const PrivateLayout: React.FC<PrivateLayoutProps> = ({ children }) => {
                 {(user?.role === 'ADMIN' || user?.role === 'EDITOR') && (
                   <>
                     <li>
-                      <a href="/create" className="text-sm text-blue-600 hover:text-blue-800 transition-colors">Create content</a>
+                      <a href="/create" className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors">Create content</a>
                     </li>
                     <li>
-                      <a href="/test-store" className="text-sm text-orange-600 hover:text-orange-800 transition-colors">🔧 Test Store</a>
+                      <a href="/test-store" className="text-sm text-orange-600 dark:text-orange-400 hover:text-orange-800 dark:hover:text-orange-300 transition-colors">🔧 Test Store</a>
                     </li>
                   </>
                 )}
@@ -149,27 +153,27 @@ const PrivateLayout: React.FC<PrivateLayoutProps> = ({ children }) => {
             {/* User Management section - Admin only */}
             {user?.role === 'ADMIN' && (
               <div className="mb-6">
-                <button className="flex items-center justify-between w-full text-left text-sm font-medium text-gray-900 mb-3">
+                <button className="flex items-center justify-between w-full text-left text-sm font-medium text-gray-900 dark:text-white mb-3">
                   <span>Administration</span>
-                  <svg className="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg className="h-4 w-4 text-gray-400 dark:text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                   </svg>
                 </button>
-                <ul className="space-y-1 ml-3 border-l border-gray-200 pl-3">
+                <ul className="space-y-1 ml-3 border-l border-gray-200 dark:border-gray-600 pl-3">
                   <li>
-                    <a href="/admin" className="text-sm text-blue-600 hover:text-blue-800 transition-colors">Admin Panel</a>
+                    <a href="/admin" className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors">Admin Panel</a>
                   </li>
                   <li>
-                    <a href="/settings" className="text-sm text-blue-600 hover:text-blue-800 transition-colors">System settings</a>
+                    <a href="/settings" className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors">System settings</a>
                   </li>
                   <li>
-                    <a href="/admin" className="text-sm text-blue-600 hover:text-blue-800 transition-colors">User management</a>
+                    <a href="/admin" className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors">User management</a>
                   </li>
                   <li>
                     <a href="#" className="text-sm text-blue-600 hover:text-blue-800 transition-colors">Permissions</a>
                   </li>
                   <li>
-                    <a href="#" className="text-sm text-blue-600 hover:text-blue-800 transition-colors">Backup & restore</a>
+                    <a href="#" className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors">Backup & restore</a>
                   </li>
                 </ul>
               </div>
@@ -177,34 +181,34 @@ const PrivateLayout: React.FC<PrivateLayoutProps> = ({ children }) => {
 
             {/* Spaces section */}
             <div className="mb-6">
-              <button className="flex items-center justify-between w-full text-left text-sm font-medium text-gray-900 mb-3">
+              <button className="flex items-center justify-between w-full text-left text-sm font-medium text-gray-900 dark:text-white mb-3">
                 <span>Your Spaces</span>
-                <svg className="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="h-4 w-4 text-gray-400 dark:text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
-              <ul className="space-y-1 ml-3 border-l border-gray-200 pl-3">
+              <ul className="space-y-1 ml-3 border-l border-gray-200 dark:border-gray-600 pl-3">
                 {spaces.slice(0, 5).map(space => (
                   <li key={space.id}>
                     <a 
                       href={`/spaces/${space.id}`} 
-                      className="text-sm text-blue-600 hover:text-blue-800 transition-colors flex items-center justify-between"
+                      className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors flex items-center justify-between"
                     >
                       <span>{space.name}</span>
-                      <span className="text-xs text-gray-400">{space.pageCount}</span>
+                      <span className="text-xs text-gray-400 dark:text-gray-500">{space.pageCount}</span>
                     </a>
                   </li>
                 ))}
                 {spaces.length > 5 && (
                   <li>
-                    <a href="/spaces" className="text-sm text-gray-500 hover:text-blue-600 transition-colors">
+                    <a href="/spaces" className="text-sm text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                       View all spaces →
                     </a>
                   </li>
                 )}
                 {spaces.length === 0 && (
                   <li>
-                    <a href="/spaces" className="text-sm text-gray-500 hover:text-blue-600 transition-colors">
+                    <a href="/spaces" className="text-sm text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                       Create your first space →
                     </a>
                   </li>
@@ -214,23 +218,23 @@ const PrivateLayout: React.FC<PrivateLayoutProps> = ({ children }) => {
 
             {/* Help & Support section */}
             <div className="mb-6">
-              <h2 className="text-sm font-medium text-gray-900 mb-3">Help & Support</h2>
+              <h2 className="text-sm font-medium text-gray-900 dark:text-white mb-3">Help & Support</h2>
               <ul className="space-y-1">
                 <li>
-                  <a href="#" className="text-sm text-blue-600 hover:text-blue-800 transition-colors">Documentation</a>
+                  <a href="#" className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors">Documentation</a>
                 </li>
                 <li>
-                  <a href="#" className="text-sm text-blue-600 hover:text-blue-800 transition-colors">FAQ</a>
+                  <a href="#" className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors">FAQ</a>
                 </li>
                 <li>
-                  <a href="#" className="text-sm text-blue-600 hover:text-blue-800 transition-colors">Contact support</a>
+                  <a href="#" className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors">Contact support</a>
                 </li>
               </ul>
             </div>
           </div>
         </nav>
         
-        <main className="flex-1 bg-white">
+        <main className="flex-1 bg-white dark:bg-gray-900">
           {children}
         </main>
       </div>
