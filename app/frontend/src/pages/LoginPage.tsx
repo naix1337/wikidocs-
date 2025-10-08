@@ -47,7 +47,10 @@ const LoginPage: React.FC = () => {
       }
 
       // Validate invite code
+      console.log('Validating invite code:', inviteCode); // Debug
+      console.log('Available codes:', inviteStore.getActiveInviteCodes()); // Debug
       const validation = inviteStore.validateInviteCode(inviteCode);
+      console.log('Validation result:', validation); // Debug
       if (!validation.valid) {
         setError(validation.error || 'Invalid invite code');
         setLoading(false);

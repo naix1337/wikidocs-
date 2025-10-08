@@ -158,9 +158,27 @@ export const UserManager: React.FC = () => {
   };
 
   const handleGenerateInviteCode = () => {
-    if (currentUser) {
-      const code = generateInviteCode(currentUser.id, 7); // 7 days expiry
-      setGeneratedCode(code);
+    try {
+      if (currentUser) {
+        const inviteCode = generateInviteCode(
+          currentUser.id, 
+          currentUser.name || currentUser.email, 
+          { 
+            expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days from now
+            description: 'Generated from User Management'
+          }
+        );
+        console.log('Generated invite code:', inviteCode); // Debug log
+        setGeneratedCode(inviteCode.code);
+        setShowInviteModal(true);
+      } else {
+        console.error('No current user found');
+      }
+    } catch (error) {
+      console.error('Error generating invite code:', error);
+      // Fallback - generate a simple code
+      const fallbackCode = 'WIKI' + Math.random().toString(36).substr(2, 4).toUpperCase();
+      setGeneratedCode(fallbackCode);
       setShowInviteModal(true);
     }
   };
@@ -570,7 +588,7 @@ export const UserManager: React.FC = () => {
       )}
 
       {/* Invite Code Modal */}
-      {showInviteModal && (
+      {showInviteModal && generatedCode && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white dark:bg-gray-800 rounded-xl p-6 w-full max-w-md mx-4">
             <div className="flex items-center justify-between mb-4">

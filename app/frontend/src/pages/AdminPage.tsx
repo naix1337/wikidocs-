@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAuthStore } from '../stores/authStore';
 import { useAnalyticsStore } from '../stores/analyticsStore';
+import { useInviteCodeStore } from '../stores/inviteCodeStore';
 import { ContentManager } from '../components/admin/ContentManager';
 import { UserManager } from '../components/admin/UserManager';
 import { SystemSettings } from '../components/admin/SystemSettings';
@@ -8,6 +9,7 @@ import { SystemSettings } from '../components/admin/SystemSettings';
 const AdminPage: React.FC = () => {
   const { user } = useAuthStore();
   const analytics = useAnalyticsStore();
+  const inviteStore = useInviteCodeStore();
   const [activeTab, setActiveTab] = useState('overview');
 
   // Redirect if not admin
@@ -143,6 +145,34 @@ const AdminPage: React.FC = () => {
                   </div>
                 </div>
               ))}
+            </div>
+
+            {/* Active Invite Codes Debug Section */}
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Active Invite Codes (Debug)</h3>
+              <div className="space-y-2">
+                {inviteStore.getActiveInviteCodes().map((code) => (
+                  <div key={code.id} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                    <div>
+                      <code className="text-sm font-mono font-bold text-blue-600 dark:text-blue-400">
+                        {code.code}
+                      </code>
+                      <p className="text-xs text-gray-600 dark:text-gray-400">
+                        Created by {code.createdByName} • Uses: {code.currentUses}/{code.maxUses || '∞'}
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => navigator.clipboard.writeText(code.code)}
+                      className="text-xs bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 px-2 py-1 rounded"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                ))}
+                {inviteStore.getActiveInviteCodes().length === 0 && (
+                  <p className="text-gray-500 dark:text-gray-400 text-sm">No active invite codes found.</p>
+                )}
+              </div>
             </div>
 
             {/* Recent Activity */}
