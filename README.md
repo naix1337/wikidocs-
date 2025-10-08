@@ -2,6 +2,24 @@
 
 A modern, Docker-inspired documentation platform built with React, TypeScript, and NestJS. Features a comprehensive admin panel, content management system, and beautiful user interface.
 
+## 📸 Screenshots
+
+### Login & Registration
+![Login Page](media/Screenshot%202025-10-08%20094037.png)
+*Modern login interface with registration support and invite code system*
+
+### Content Management
+![Pages Management](media/Screenshot%202025-10-08%20094153.png)
+*Comprehensive content management with spaces and pages organization*
+
+### Admin Dashboard
+![Admin Panel](media/Screenshot%202025-10-08%20094233.png)
+*Real-time analytics dashboard with user management and system settings*
+
+### User Interface
+![Dashboard](media/Screenshot%202025-10-08%20094305.png)
+*Clean, responsive user interface with dark mode support*
+
 ## ✨ Features
 
 ### 🎯 **Complete Wiki System**
