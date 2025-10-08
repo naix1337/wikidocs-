@@ -80,7 +80,38 @@ git config --global user.email "deine@email.com"
 
 ## 🚀 Installation Methods
 
-### Method 1: Quick Development Setup (Empfohlen für Testing)
+### Method 0: 🔥 Automatische Installation (Empfohlen)
+
+**One-Command Setup - Alles automatisch:**
+
+```bash
+# Download und ausführen des automatischen Installers
+curl -fsSL https://raw.githubusercontent.com/naix1337/wikidocs-/main/setup-auto.sh | bash
+```
+
+**Oder mit wget:**
+```bash
+wget -qO- https://raw.githubusercontent.com/naix1337/wikidocs-/main/setup-auto.sh | bash
+```
+
+**Features des automatischen Installers:**
+- ✅ **OS-Erkennung** (Ubuntu, Debian, CentOS, Fedora, Arch)
+- ✅ **Automatische System-Updates**
+- ✅ **Node.js 20.x Installation**
+- ✅ **pnpm Package Manager**
+- ✅ **Git Repository Download**
+- ✅ **Alle Dependencies Installation**
+- ✅ **Datenbank Setup mit Demo-Daten**
+- ✅ **Firewall-Konfiguration**
+- ✅ **Netzwerk-Setup (0.0.0.0)**
+- ✅ **Automatischer Start**
+
+**Schnelle Alternative (für erfahrene User):**
+```bash
+curl -fsSL https://raw.githubusercontent.com/naix1337/wikidocs-/main/quick-install.sh | bash
+```
+
+### Method 1: Quick Development Setup (Manuell)
 
 ```bash
 # 1. Repository klonen
@@ -95,7 +126,9 @@ pnpm install
 pnpm dev
 ```
 
-**✅ Das war's!** Die App läuft auf http://localhost:5173
+**✅ Das war's!** Die App läuft auf:
+- Lokal: http://localhost:5173
+- Netzwerk: http://[IHRE-IP]:5173 (von anderen Geräten erreichbar)
 
 ### Method 2: Full Stack Development
 
@@ -129,9 +162,9 @@ make dev
 ```
 
 **Zugriff:**
-- Frontend: http://localhost:5173
-- Backend API: http://localhost:3000
-- API Docs: http://localhost:3000/api
+- Frontend: http://localhost:5173 (lokal) | http://[IHRE-IP]:5173 (netzwerk)
+- Backend API: http://localhost:3001 (lokal) | http://[IHRE-IP]:3001 (netzwerk)
+- API Docs: http://localhost:3001/api (lokal) | http://[IHRE-IP]:3001/api (netzwerk)
 
 ### Method 3: Docker Production Deployment
 
@@ -163,6 +196,62 @@ Nach der Installation kannst du dich mit folgenden Demo-Accounts einloggen:
 | **Admin** | `admin@wiki.local` | `admin123` | Vollzugriff, User-Management |
 | **Editor** | `editor@wiki.local` | `editor123` | Content erstellen/bearbeiten |
 | **Viewer** | `viewer@wiki.local` | `viewer123` | Nur Lesen |
+
+## 🌐 Network Access Configuration
+
+Das WikiDocs-System ist bereits für den Netzwerk-Zugriff konfiguriert und hört auf allen Netzwerk-Interfaces (`0.0.0.0`).
+
+### Lokale IP-Adresse ermitteln
+
+```bash
+# Aktuelle IP-Adresse anzeigen
+hostname -I | awk '{print $1}'
+# Oder
+ip route get 1 | awk '{print $7}' | head -1
+# Oder alle Netzwerk-Interfaces anzeigen
+ip addr show
+```
+
+### Zugriff von anderen Geräten
+
+Nach dem Start der Anwendung ist sie erreichbar unter:
+
+**Frontend:**
+- Lokal: `http://localhost:5173`
+- Netzwerk: `http://[IHRE-IP]:5173`
+- Beispiel: `http://192.168.1.100:5173`
+
+**Backend API:**
+- Lokal: `http://localhost:3001`
+- Netzwerk: `http://[IHRE-IP]:3001`
+- API Docs: `http://[IHRE-IP]:3001/api`
+
+### Firewall-Konfiguration
+
+```bash
+# Ubuntu/Debian - Ports öffnen
+sudo ufw allow 5173/tcp comment "WikiDocs Frontend"
+sudo ufw allow 3001/tcp comment "WikiDocs Backend"
+
+# CentOS/RHEL - Firewalld
+sudo firewall-cmd --permanent --add-port=5173/tcp
+sudo firewall-cmd --permanent --add-port=3001/tcp
+sudo firewall-cmd --reload
+
+# Status prüfen
+sudo ufw status          # Ubuntu/Debian
+sudo firewall-cmd --list-all  # CentOS/RHEL
+```
+
+### Mobile Geräte & Tablets
+
+Die Anwendung ist vollständig responsive und funktioniert auf:
+- 📱 **Smartphones** (iOS, Android)
+- 📱 **Tablets** (iPad, Android Tablets)
+- 💻 **Laptops & Desktops**
+- 🖥️ **Smart TVs** mit Webbrowser
+
+Einfach die IP-Adresse des Servers in den Browser eingeben: `http://[SERVER-IP]:5173`
 
 ## 🛠️ Verfügbare Make Commands
 

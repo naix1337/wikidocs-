@@ -45,6 +45,22 @@ A modern, Docker-inspired documentation platform built with React, TypeScript, a
 
 ## 🚀 Quick Start
 
+### 🔥 Automatische Installation (Linux)
+
+**One-Command Setup:**
+```bash
+curl -fsSL https://raw.githubusercontent.com/naix1337/wikidocs-/main/setup-auto.sh | bash
+```
+
+**Features:**
+- ✅ Automatische OS-Erkennung (Ubuntu, Debian, CentOS, Fedora, Arch)
+- ✅ System-Updates und Dependencies
+- ✅ Node.js 20.x + pnpm Installation
+- ✅ Komplettes Projekt Setup
+- ✅ Datenbank mit Demo-Daten
+- ✅ Firewall-Konfiguration
+- ✅ Automatischer Start auf allen Netzwerk-Interfaces
+
 ### Option 1: Simple Development Setup
 
 ```bash

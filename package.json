@@ -1,0 +1,28 @@
+{
+  "name": "wikidocs-system",
+  "version": "1.0.0",
+  "description": "Modern Wiki/Documentation System with React Frontend and NestJS Backend",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"pnpm dev:backend\" \"pnpm dev:frontend\"",
+    "dev:frontend": "cd app/frontend && pnpm dev",
+    "dev:backend": "cd app/backend && pnpm start:dev",
+    "build": "pnpm build:frontend && pnpm build:backend",
+    "build:frontend": "cd app/frontend && pnpm build",
+    "build:backend": "cd app/backend && pnpm build",
+    "start": "concurrently \"pnpm start:backend\" \"pnpm start:frontend\"",
+    "start:frontend": "cd app/frontend && pnpm preview",
+    "start:backend": "cd app/backend && pnpm start:prod",
+    "install:all": "pnpm install && cd app/frontend && pnpm install && cd ../backend && pnpm install",
+    "db:setup": "cd app/backend && pnpm prisma generate && pnpm prisma db push && pnpm prisma db seed",
+    "network": "echo \"Frontend: http://$(hostname -I | awk '{print $1}'):5173\" && echo \"Backend: http://$(hostname -I | awk '{print $1}'):3001\"",
+    "ip": "ipconfig"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  }
+}
